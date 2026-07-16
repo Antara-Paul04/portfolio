@@ -1,0 +1,155 @@
+
+@font-face {
+  font-family: 'Loved by the King';
+  src: url(../fonts/loved-by-the-king.woff2) format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url(../fonts/cormorant-garamond-600.woff2) format('woff2');
+  font-weight: 600; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url(../fonts/inter-400.woff2) format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: #F2E8D3; }
+body { overflow-x: hidden; }
+#viewport { position: relative; width: 100%; }
+#stage {
+  position: absolute; top: 0; left: 0;
+  width: 1512px; height: 2721px;
+  transform-origin: top left;
+  background: #F2E8D3;
+}
+#bg-pattern { position: absolute; top: 0; left: 0; pointer-events: none; }
+#grain {
+  position: absolute; inset: 0; pointer-events: none;
+  mix-blend-mode: overlay; opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+}
+#art { position: absolute; top: 0; left: 0; }
+
+/* ---------- ink strokes ---------- */
+.ink .draw {
+  fill: none; stroke: #000; stroke-width: 1;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw 2.1s cubic-bezier(.55,.06,.35,.95) forwards;
+}
+.ink .d2 { animation-duration: 1.3s; }
+.tl {
+  fill-opacity: 0.3;
+  transform: scaleX(0);
+  animation: growx 0.9s cubic-bezier(.5,.1,.4,.95) forwards;
+}
+@keyframes growx { to { transform: scaleX(1); } }
+.scribble {
+  fill: none; stroke: #fff; stroke-width: 18; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw 1.6s cubic-bezier(.6,.08,.4,.92) forwards;
+}
+.scribble2 { stroke-width: 14; animation-duration: 0.75s; }
+.sfine { stroke-width: 8; animation-duration: 1.0s; }
+.sxs { stroke-width: 6; animation-duration: 0.5s; }
+.lfill { fill-opacity: 0.92; }
+.wfill { fill: #5D0000; }
+#stage { cursor: none; }
+#stage a { cursor: pointer; }
+
+/* ---------- sketch-lens overlay (GPU clip-path, no per-frame filter work) ---------- */
+#lens {
+  position: absolute; top: 0; left: 0; width: 1512px; height: 2721px;
+  background: #F2E8D3; pointer-events: none;
+  clip-path: circle(0px at -300px -300px);
+  will-change: clip-path;
+}
+#lens svg { position: absolute; top: 0; left: 0; }
+#lens .draw, #lens .lpath, #lens .kspark {
+  animation: none !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important;
+}
+#lens .tl { animation: none !important; transform: none !important; }
+#curRingEl {
+  position: absolute; top: 0; left: 0; width: 210px; height: 210px; box-sizing: border-box;
+  border: 1.5px dashed rgba(74,59,50,0.55); border-radius: 50%;
+  pointer-events: none; transform-origin: 0 0;
+  transform: translate(-500px,-500px) scale(0); opacity: 0;
+}
+#curDotEl {
+  position: absolute; top: 0; left: 0; width: 10px; height: 10px;
+  background: #5D0000; border-radius: 50%; opacity: 0; pointer-events: none;
+}
+
+/* ---------- lotuses & sparkles ---------- */
+.lpath {
+  fill: none; stroke: #1F1611; stroke-opacity: 0.42; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw 0.6s cubic-bezier(.5,.1,.4,.95) forwards;
+}
+.lvine { animation-duration: 1.2s; }
+.vine {
+  fill: none; stroke: #4A3B32; stroke-opacity: 0.55; stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw 1.1s ease-out forwards;
+}
+.bloom {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  transform: scale(0.04);
+  animation: bloomPop 0.9s cubic-bezier(.24,1.3,.42,1) forwards;
+}
+.petal {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  transform: scale(0.12) rotate(8deg); opacity: 0;
+  animation: petalPop 0.7s cubic-bezier(.24,1.3,.5,1) forwards;
+}
+.sway {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: sway 4.8s ease-in-out infinite alternate;
+}
+.kspark {
+  fill: none; stroke: #000; stroke-opacity: 0.28; stroke-linecap: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw 0.55s ease-out forwards;
+}
+@keyframes bloomPop { 70% { transform: scale(1.07); } 100% { transform: scale(1); } }
+@keyframes petalPop { to { transform: scale(1) rotate(0deg); opacity: 1; } }
+@keyframes sway { from { transform: rotate(-1.6deg); } to { transform: rotate(1.8deg); } }
+@keyframes sparkIn { to { transform: scale(1) rotate(0deg); opacity: 1; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* ---------- text ---------- */
+.t { position: absolute; white-space: nowrap; }
+.lbtk { font-family: 'Loved by the King', cursive; font-size: 36px; line-height: 62px; }
+.nav { color: rgba(0,0,0,0.61); text-decoration: none; cursor: pointer; }
+.nav:hover { color: rgba(93,0,0,0.85); }
+#nav-work { left: 1076px; top: 53px; }
+#nav-contact { left: 1320px; top: 53px; }
+#nav-work, #nav-contact { opacity: 0; animation: fadein 0.9s ease 0.9s forwards; }
+#tagline {
+  left: 231px; top: 732px; width: 1050px;
+  color: #5D0000; white-space: normal;
+  clip-path: inset(0 100% 0 0);
+  animation: write 1.8s cubic-bezier(.5,.1,.5,.9) 6.5s forwards;
+}
+.cg { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 32px; line-height: 39px; color: #F5E6D3; }
+#email { left: 77px; top: 2493px; text-decoration: none; }
+#email:hover { color: #5D0000; }
+#location { left: 75px; top: 2543px; }
+#copyright {
+  left: 609px; top: 2656px; width: 295px; text-align: center;
+  font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1; color: #FFF;
+}
+@keyframes fadein { to { opacity: 1; } }
+@keyframes write { to { clip-path: inset(0 -2% 0 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ink .draw, .scribble, .vine, .lpath, .kspark { animation: none; stroke-dashoffset: 0; }
+  .tl { animation: none; transform: none; }
+  .bloom, .petal, .spark { animation: none; transform: none; opacity: 1; }
+  .sway { animation: none; }
+  #nav-work, #nav-contact { animation: none; opacity: 1; }
+  #tagline { animation: none; clip-path: none; }
+}

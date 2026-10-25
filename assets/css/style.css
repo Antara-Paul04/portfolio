@@ -1,155 +1,822 @@
+/* =========================================================================
+   Antara Paul — portfolio
+   Replicated from Figma "MacBook Pro 14" - 21" (node 687:54), 1512 x 3584.
+   Artwork is laid out in design pixels inside [data-fit] stages that are
+   scaled to the available width (see assets/js/main.js).
+   ========================================================================= */
 
-@font-face {
-  font-family: 'Loved by the King';
-  src: url(../fonts/loved-by-the-king.woff2) format('woff2');
-  font-weight: 400; font-style: normal; font-display: block;
-}
-@font-face {
-  font-family: 'Cormorant Garamond';
-  src: url(../fonts/cormorant-garamond-600.woff2) format('woff2');
-  font-weight: 600; font-style: normal; font-display: block;
-}
-@font-face {
-  font-family: 'Inter';
-  src: url(../fonts/inter-400.woff2) format('woff2');
-  font-weight: 400; font-style: normal; font-display: block;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { background: #F2E8D3; }
-body { overflow-x: hidden; }
-#viewport { position: relative; width: 100%; }
-#stage {
-  position: absolute; top: 0; left: 0;
-  width: 1512px; height: 2721px;
-  transform-origin: top left;
-  background: #F2E8D3;
-}
-#bg-pattern { position: absolute; top: 0; left: 0; pointer-events: none; }
-#grain {
-  position: absolute; inset: 0; pointer-events: none;
-  mix-blend-mode: overlay; opacity: 0.35;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 300px 300px;
-}
-#art { position: absolute; top: 0; left: 0; }
+:root {
+  --cream:      #F2E8D3;
+  --gold:       #FFB41B;
+  --orange:     #F07C24;
+  --red:        #E03F21;
+  --crimson:    #A8143C;
+  --ink-60:     rgba(0, 0, 0, 0.6);
 
-/* ---------- ink strokes ---------- */
-.ink .draw {
-  fill: none; stroke: #000; stroke-width: 1;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: draw 2.1s cubic-bezier(.55,.06,.35,.95) forwards;
-}
-.ink .d2 { animation-duration: 1.3s; }
-.tl {
-  fill-opacity: 0.3;
-  transform: scaleX(0);
-  animation: growx 0.9s cubic-bezier(.5,.1,.4,.95) forwards;
-}
-@keyframes growx { to { transform: scaleX(1); } }
-.scribble {
-  fill: none; stroke: #fff; stroke-width: 18; stroke-linecap: round; stroke-linejoin: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: draw 1.6s cubic-bezier(.6,.08,.4,.92) forwards;
-}
-.scribble2 { stroke-width: 14; animation-duration: 0.75s; }
-.sfine { stroke-width: 8; animation-duration: 1.0s; }
-.sxs { stroke-width: 6; animation-duration: 0.5s; }
-.lfill { fill-opacity: 0.92; }
-.wfill { fill: #5D0000; }
-#stage { cursor: none; }
-#stage a { cursor: pointer; }
-
-/* ---------- sketch-lens overlay (GPU clip-path, no per-frame filter work) ---------- */
-#lens {
-  position: absolute; top: 0; left: 0; width: 1512px; height: 2721px;
-  background: #F2E8D3; pointer-events: none;
-  clip-path: circle(0px at -300px -300px);
-  will-change: clip-path;
-}
-#lens svg { position: absolute; top: 0; left: 0; }
-#lens .draw, #lens .lpath, #lens .kspark {
-  animation: none !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important;
-}
-#lens .tl { animation: none !important; transform: none !important; }
-#curRingEl {
-  position: absolute; top: 0; left: 0; width: 210px; height: 210px; box-sizing: border-box;
-  border: 1.5px dashed rgba(74,59,50,0.55); border-radius: 50%;
-  pointer-events: none; transform-origin: 0 0;
-  transform: translate(-500px,-500px) scale(0); opacity: 0;
-}
-#curDotEl {
-  position: absolute; top: 0; left: 0; width: 10px; height: 10px;
-  background: #5D0000; border-radius: 50%; opacity: 0; pointer-events: none;
+  --pad-x:      clamp(20px, 4.63vw, 76px);   /* 70px @ 1512 */
+  --nav-size:   clamp(13px, 1.323vw, 22px);  /* 20px @ 1512 */
 }
 
-/* ---------- lotuses & sparkles ---------- */
-.lpath {
-  fill: none; stroke: #1F1611; stroke-opacity: 0.42; stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: draw 0.6s cubic-bezier(.5,.1,.4,.95) forwards;
-}
-.lvine { animation-duration: 1.2s; }
-.vine {
-  fill: none; stroke: #4A3B32; stroke-opacity: 0.55; stroke-width: 1.3;
-  stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: draw 1.1s ease-out forwards;
-}
-.bloom {
-  transform-box: fill-box; transform-origin: 50% 100%;
-  transform: scale(0.04);
-  animation: bloomPop 0.9s cubic-bezier(.24,1.3,.42,1) forwards;
-}
-.petal {
-  transform-box: fill-box; transform-origin: 50% 100%;
-  transform: scale(0.12) rotate(8deg); opacity: 0;
-  animation: petalPop 0.7s cubic-bezier(.24,1.3,.5,1) forwards;
-}
-.sway {
-  transform-box: fill-box; transform-origin: 50% 100%;
-  animation: sway 4.8s ease-in-out infinite alternate;
-}
-.kspark {
-  fill: none; stroke: #000; stroke-opacity: 0.28; stroke-linecap: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1;
-  animation: draw 0.55s ease-out forwards;
-}
-@keyframes bloomPop { 70% { transform: scale(1.07); } 100% { transform: scale(1); } }
-@keyframes petalPop { to { transform: scale(1) rotate(0deg); opacity: 1; } }
-@keyframes sway { from { transform: rotate(-1.6deg); } to { transform: rotate(1.8deg); } }
-@keyframes sparkIn { to { transform: scale(1) rotate(0deg); opacity: 1; } }
-@keyframes draw { to { stroke-dashoffset: 0; } }
+*, *::before, *::after { box-sizing: border-box; }
 
-/* ---------- text ---------- */
-.t { position: absolute; white-space: nowrap; }
-.lbtk { font-family: 'Loved by the King', cursive; font-size: 36px; line-height: 62px; }
-.nav { color: rgba(0,0,0,0.61); text-decoration: none; cursor: pointer; }
-.nav:hover { color: rgba(93,0,0,0.85); }
-#nav-work { left: 1076px; top: 53px; }
-#nav-contact { left: 1320px; top: 53px; }
-#nav-work, #nav-contact { opacity: 0; animation: fadein 0.9s ease 0.9s forwards; }
-#tagline {
-  left: 231px; top: 732px; width: 1050px;
-  color: #5D0000; white-space: normal;
-  clip-path: inset(0 100% 0 0);
-  animation: write 1.8s cubic-bezier(.5,.1,.5,.9) 6.5s forwards;
+/* No rubber-band overscroll: the body's cream propagates to the scroll canvas,
+   so bouncing past the footer would flash cream under the red. */
+html {
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+  scroll-behavior: smooth;
 }
-.cg { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 32px; line-height: 39px; color: #F5E6D3; }
-#email { left: 77px; top: 2493px; text-decoration: none; }
-#email:hover { color: #5D0000; }
-#location { left: 75px; top: 2543px; }
-#copyright {
-  left: 609px; top: 2656px; width: 295px; text-align: center;
-  font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1; color: #FFF;
-}
-@keyframes fadein { to { opacity: 1; } }
-@keyframes write { to { clip-path: inset(0 -2% 0 0); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .ink .draw, .scribble, .vine, .lpath, .kspark { animation: none; stroke-dashoffset: 0; }
-  .tl { animation: none; transform: none; }
-  .bloom, .petal, .spark { animation: none; transform: none; opacity: 1; }
-  .sway { animation: none; }
-  #nav-work, #nav-contact { animation: none; opacity: 1; }
-  #tagline { animation: none; clip-path: none; }
+  html { scroll-behavior: auto; }
 }
+
+body {
+  position: relative;
+  margin: 0;
+  background: var(--cream);
+  color: #1a1a1a;
+  font-family: "Archivo Narrow", "Arial Narrow", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+img { display: block; }
+
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- surfaces */
+
+.page-texture,
+.page-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* The motif tile is two staggered, overlapping columns of the Figma motif,
+   so it repeats exactly as the 8-column pattern frame does. It scales with
+   the page so it keeps its size relative to the artwork. */
+.page-texture {
+  z-index: 0;
+  background: url("../img/bg-tile.svg") repeat;
+  background-size: 25.6484vw 12.7853vw;   /* 387.804 x 193.3135 @ 1512 */
+  background-position: -2.7116vw 0;       /* pattern frame starts at x = -41 */
+}
+
+/* Scrolls with the page on purpose. A blended layer that is position: fixed
+   has to be re-composited against freshly scrolled content every frame; as
+   part of the scrolling content the blend rasterises once and is then just
+   translated. Same reason there is no will-change here — promoting a blended
+   layer keeps it live rather than letting it bake in. */
+.page-grain {
+  z-index: 1;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background: url("../img/grain-tile.png") repeat;
+  background-size: 300px 300px;
+}
+
+main,
+.site-footer { position: relative; z-index: 2; }
+
+/* Above main: the hero's full-bleed canvas overlaps the header band and
+   would otherwise swallow every click on the nav links. */
+.site-header { position: relative; z-index: 5; }
+
+/* ------------------------------------------------------------ fit stages */
+/* A [data-fit] element keeps the design aspect ratio; its .fit-in child is
+   the untouched design-pixel canvas, scaled by --s to fill the width.      */
+
+[data-fit] {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--w) / var(--h);
+}
+
+.fit-in {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+  transform-origin: 0 0;
+  transform: scale(var(--s, 1));
+}
+
+/* ------------------------------------------------------- artwork primitives */
+
+.art {
+  position: absolute;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+  transform: rotate(calc(var(--deg, 0) * 1deg)) scaleX(var(--fx, 1)) scaleY(var(--fy, 1));
+}
+
+.art > img,
+.art__rot > img {
+  position: absolute;
+  inset: var(--t, 0) var(--r, 0) var(--b, 0) var(--l, 0);
+  width: auto;
+  height: auto;
+  max-width: none;
+}
+
+.art__rot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--rw) * 1px);
+  height: calc(var(--rh) * 1px);
+  transform: translate(-50%, -50%)
+             rotate(calc(var(--deg, 0) * 1deg))
+             scaleX(var(--fx, 1))
+             scaleY(var(--fy, 1));
+}
+
+/* Flat colour rectangles: gold plates behind the lettering, orange headbars. */
+.plate,
+.bar {
+  position: absolute;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+}
+.plate { background: var(--gold); }
+.bar   { background: var(--orange); }
+
+/* ================================================================== header */
+
+.site-header {
+  position: absolute;
+  top: clamp(18px, 3.44vw, 56px);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 var(--pad-x);
+  font-size: var(--nav-size);
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.site-header__mark { margin: 0; }
+.site-header__mark span { color: var(--crimson); }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.48vw, 40px);
+}
+
+.site-nav__star {
+  width: clamp(16px, 2.15vw, 36px);
+  height: auto;
+}
+
+/* ==================================================================== hero */
+
+.hero { overflow: hidden; }
+.hero > .fit-in { overflow: visible; }
+
+.word {
+  position: absolute;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+  aspect-ratio: auto;
+}
+
+.strip {
+  position: absolute;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+  aspect-ratio: auto;
+  overflow: hidden;
+}
+
+/* The strip's canvas is what blends onto the gold plate underneath —
+   keeping the blend on .fit-in (not on the photo) preserves the backdrop. */
+.strip > .fit-in { mix-blend-mode: overlay; }
+
+.strip__photo { position: absolute; }
+
+.photo { position: absolute; overflow: hidden; }
+.photo > img { position: absolute; max-width: none; }
+
+/* ------------------------------------------------- hero build-on sequence */
+/* Each wordmark draws itself the way it was made: construction lines first,
+   then the letterform outline, then the colour. Every stage is one clip-path
+   wipe across the whole word, so the strokes read as being laid down rather
+   than each little mark popping separately.
+   Deliberately pure CSS with animation-fill-mode: both — no class toggle and
+   no JS. A script that fails to run can then never strand the hero hidden;
+   the worst case is the wipe playing while a late image decodes. */
+
+.stage { position: absolute; inset: 0; }
+
+.word { --wd: 0ms; }
+.word--creator { --wd: 320ms; }
+.word--builder { --wd: 640ms; }
+
+@keyframes stage-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 -2% 0 0); }
+}
+
+@keyframes stage-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hero .stage { animation: stage-draw 800ms cubic-bezier(0.65, 0, 0.35, 1) both; }
+.hero .stage[data-stage="1"] { animation-delay: calc(var(--wd) + 120ms);  animation-duration: 620ms; }
+.hero .stage[data-stage="2"] { animation-delay: calc(var(--wd) + 640ms);  animation-duration: 860ms; }
+.hero .stage[data-stage="3"] { animation-delay: calc(var(--wd) + 1400ms); animation-duration: 900ms; }
+
+.site-header { animation: stage-fade 700ms ease both; }
+
+/* Each gold band opens as one object: the plate and the photo inside it wipe
+   on the same curve, duration and delay, so the box and the image reveal
+   together rather than the box fading in first.
+   The wipe goes on the strip's .fit-in — the element that already carries the
+   overlay blend. Animating clip-path on the photo inside it promotes that to
+   its own layer, which escapes .strip's overflow clip and drops the blend,
+   leaving a raw full-colour sliver past the strip edge. .fit-in is already a
+   stacking context, so clipping it changes nothing about the blend. */
+.hero .plate,
+.hero .strip > .fit-in {
+  animation: stage-draw 900ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+/* Must match .hero .plate's specificity — the shorthand above resets
+   animation-delay, so a bare .plate--right would lose the cascade. */
+.hero .plate--right,
+.hero .strip--right > .fit-in { animation-delay: 1500ms; }
+.hero .plate--left,
+.hero .strip--left  > .fit-in { animation-delay: 1900ms; }
+
+/* -------------------------------------------------- ornament entrances */
+/* The flowers, sparkles and diamond get their own entrance instead of
+   being sliced by the colour wipe: flowers grow out of their stem with a
+   small overshoot, sparkles twinkle in a beat later. Delays ride on the
+   word's --wd so the cascade order is preserved.
+   --o  : transform-origin (the stem/attachment point)
+   --od : extra per-ornament delay for staggering twins */
+
+.art--bloom img,
+.art--pop img { opacity: 0; }
+
+@keyframes orn-bloom {
+  0%   { opacity: 0; transform: scale(0.55) rotate(-5deg); }
+  100% { opacity: 1; transform: scale(1)    rotate(0deg); }
+}
+
+@keyframes orn-pop {
+  0%   { opacity: 0; transform: scale(0.4)  rotate(-30deg); }
+  100% { opacity: 1; transform: scale(1)    rotate(0deg); }
+}
+
+.art--bloom img {
+  transform-origin: var(--o, 50% 100%);
+  animation: orn-bloom 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--wd) + 2300ms + var(--od, 0ms));
+}
+
+.art--pop img {
+  transform-origin: 50% 50%;
+  animation: orn-pop 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--wd) + 2650ms + var(--od, 0ms));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art--bloom img,
+  .art--pop img { animation: none; opacity: 1; }
+}
+
+/* Intro over — hand the elements back to the normal paint path. */
+.hero-settled .hero .stage,
+.hero-settled .hero .plate,
+.hero-settled .hero .strip > .fit-in,
+.hero-settled .site-header {
+  animation: none;
+  clip-path: none;
+  opacity: 1;
+}
+
+/* Nothing to build up to for people who'd rather not watch it. */
+@media (prefers-reduced-motion: reduce) {
+  .hero .stage,
+  .hero .plate,
+  .hero .strip > .fit-in,
+  .site-header { animation: none; }
+}
+
+/* ================================================================== works */
+/* The works band is a row of tickets. One is open — artwork panel and text —
+   the rest are collapsed into narrow stubs carrying their title vertically
+   and their number at the foot, with scalloped stub edges. Opening one is a
+   width change only: DOM order is fixed, content never reflows, it's revealed
+   by the growing edge while the stub's label crossfades away. */
+
+.works {
+  position: relative;
+  padding: clamp(56px, 8vw, 130px) var(--pad-x) clamp(64px, 8vw, 130px);
+}
+
+.works__head {
+  text-align: center;
+  margin-bottom: clamp(36px, 4.6vw, 72px);
+}
+
+.works__kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.3vw, 20px);
+  margin: 0 0 clamp(14px, 2vw, 26px);
+  font-size: clamp(12px, 1.06vw, 18px);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+.works__kicker img { width: clamp(16px, 1.6vw, 26px); height: auto; }
+
+/* The bar over the title is the wordmarks' shirorekha, borrowed. */
+.works__title {
+  display: inline-block;
+  margin: 0;
+  padding-top: clamp(10px, 1.2vw, 18px);
+  border-top: clamp(8px, 1vw, 15px) solid var(--orange);
+  font-size: clamp(30px, 3.6vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ------------------------------------------------------------ the row */
+
+.tickets {
+  --stub: clamp(52px, 4.8vw, 72px);
+  --gap: 10px;
+  --h: clamp(300px, 30vw, 440px);
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+  display: flex;
+  gap: var(--gap);
+  height: var(--h);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.ticket {
+  --sc: 6px;    /* scallop radius */
+  --sp: 20px;   /* scallop pitch  */
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--stub);
+  height: 100%;
+  overflow: hidden;
+  background: var(--tone);
+  color: var(--on);
+  transition: width 520ms var(--ease);
+  /* scalloped stub edges, left and right only */
+  -webkit-mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--sc) * 4 + 1px) 100% no-repeat,
+    radial-gradient(circle var(--sc) at 0 calc(var(--sp) / 2), transparent 98%, #000) left top / calc(var(--sc) * 2) var(--sp) repeat-y,
+    radial-gradient(circle var(--sc) at 100% calc(var(--sp) / 2), transparent 98%, #000) right top / calc(var(--sc) * 2) var(--sp) repeat-y;
+  mask:
+    linear-gradient(#000 0 0) center / calc(100% - var(--sc) * 4 + 1px) 100% no-repeat,
+    radial-gradient(circle var(--sc) at 0 calc(var(--sp) / 2), transparent 98%, #000) left top / calc(var(--sc) * 2) var(--sp) repeat-y,
+    radial-gradient(circle var(--sc) at 100% calc(var(--sp) / 2), transparent 98%, #000) right top / calc(var(--sc) * 2) var(--sp) repeat-y;
+}
+.ticket.is-open {
+  width: calc(100% - (var(--n) - 1) * (var(--stub) + var(--gap)));
+}
+
+.ticket--gold    { --tone: var(--gold);    --on: #1a1a1a; --on-soft: rgba(26, 26, 26, 0.72); }
+.ticket--orange  { --tone: var(--orange);  --on: #1a1a1a; --on-soft: rgba(26, 26, 26, 0.72); }
+.ticket--red     { --tone: var(--red);     --on: #FAF3E1; --on-soft: rgba(250, 243, 225, 0.8); }
+.ticket--crimson { --tone: var(--crimson); --on: #FAF3E1; --on-soft: rgba(250, 243, 225, 0.8); }
+
+/* ------------------------------------------------------------ the stub */
+
+.ticket__stub {
+  position: absolute;
+  inset: 0;
+  width: var(--stub);
+  margin: 0;
+  padding: clamp(14px, 1.4vw, 20px) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 1;
+  transition: opacity 240ms ease 200ms;
+}
+.ticket.is-open .ticket__stub {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0ms;
+}
+.ticket__stub-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);      /* reads bottom-to-top, like the reference */
+  font-size: clamp(14px, 1.25vw, 19px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  max-height: calc(100% - 2.5em);
+}
+.ticket__stub-num {
+  font-size: clamp(12px, 1vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+.ticket__stub:focus-visible { outline: 2px solid var(--on); outline-offset: -6px; }
+
+/* ------------------------------------------------------------ the body */
+/* Sized to the OPEN width up front so nothing reflows during the grow —
+   the ticket's overflow just reveals it. */
+
+.ticket__body {
+  position: absolute;
+  inset: 0;
+  width: calc(1180px - (var(--n) - 1) * (var(--stub) + var(--gap)));
+  max-width: calc(100vw - 2 * var(--pad-x) - (var(--n) - 1) * (var(--stub) + var(--gap)));
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  opacity: 0;
+  pointer-events: none;   /* invisible, but it paints above the stub — must not eat its clicks */
+  transition: opacity 220ms ease 0ms;
+}
+.ticket.is-open .ticket__body {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 240ms;
+}
+
+.ticket__art {
+  position: relative;
+  overflow: hidden;
+}
+.ticket__art > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: overlay;        /* the hero's duotone onto the ticket colour */
+}
+.ticket__art > .ticket__full {
+  mix-blend-mode: normal;
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+.ticket__art:hover > .ticket__full { opacity: 1; }
+.ticket__art > .ticket__orn {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: clamp(64px, 7vw, 110px);
+  height: clamp(64px, 7vw, 110px);
+  object-fit: contain;
+  mix-blend-mode: normal;
+}
+
+.ticket__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(24px, 2.8vw, 44px) clamp(24px, 3vw, 48px);
+}
+
+.ticket__meta {
+  margin: 0 0 clamp(10px, 1.1vw, 16px);
+  font-size: clamp(12px, 1vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--on-soft);
+}
+.ticket__title {
+  margin: 0 0 clamp(10px, 1.1vw, 16px);
+  font-size: clamp(24px, 2.4vw, 38px);
+  font-weight: 700;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+.ticket__desc {
+  margin: 0 0 clamp(18px, 2vw, 30px);
+  max-width: 40ch;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.5;
+  color: var(--on-soft);
+}
+.ticket__cta {
+  align-self: flex-start;
+  padding: 0.7em 1.2em;
+  border: 1.5px solid currentColor;
+  font-size: clamp(12px, 1vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: background 200ms ease, color 200ms ease;
+}
+.ticket__cta:hover { background: var(--on); color: var(--tone); text-decoration: none; }
+.ticket__cta .arr { display: inline-block; transition: transform 250ms ease; }
+.ticket__cta:hover .arr { transform: translateX(6px); }
+
+/* ------------------------------------------------------------ the arrows */
+
+.tickets__nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  max-width: 1180px;
+  margin: clamp(16px, 1.8vw, 26px) auto 0;
+}
+.tickets__btn {
+  width: clamp(40px, 3.4vw, 50px);
+  height: clamp(40px, 3.4vw, 50px);
+  border: 1.5px solid rgba(26, 26, 26, 0.55);
+  border-radius: 50%;
+  background: none;
+  color: #1a1a1a;
+  font-size: clamp(16px, 1.3vw, 20px);
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.tickets__btn:hover { background: var(--red); border-color: var(--red); color: #FAF3E1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket, .ticket__stub, .ticket__body, .ticket__full, .ticket__cta .arr { transition: none; }
+}
+
+/* ================================================================== footer */
+
+/* The scalloped top edge is two full-height Figma shapes (gold behind, red
+   in front). Only their top band is exposed; below it a flat red continues
+   the front shape, so the seam is invisible. All of it lives on the .rise
+   layer: the footer itself is just a transparent slot that clips it, so the
+   red mass can slide up through the slot at its own speed on scroll. */
+.site-footer {
+  --wave-h: clamp(14px, 2.1vw, 34px);
+  position: relative;
+  color: #fff;
+  overflow: hidden;
+  view-timeline-name: --footer-slot;
+}
+
+.site-footer__rise {
+  position: relative;
+  padding: clamp(34px, 4.5vw, 68px) clamp(20px, 6.61vw, 108px) clamp(34px, 4.56vw, 69px);
+  background-color: transparent;
+  background-image: linear-gradient(var(--red), var(--red));
+  background-repeat: no-repeat;
+  background-position: 0 var(--wave-h);
+  background-size: 100% calc(100% - var(--wave-h));
+}
+
+.site-footer__waves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--wave-h);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* No height: the SVGs keep their 1513 x 468 ratio so the scallop pitch
+   scales with the page, and the band above crops them. */
+.wave { position: absolute; top: 0; height: auto; }
+.wave--back  { left: 0.2%; width: 101.48%; }
+.wave--front { left: 0;    width: 100.07%; }
+
+.site-footer__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(30px, 3.44vw, 56px);
+}
+
+/* Footer reveal: as the footer's slot scrolls into view, the red mass lags
+   below it and rises through at roughly half scroll speed, meeting the page
+   exactly when the slot is fully on screen — so there is never a gap at the
+   document end. The timeline is the slot's own (untransformed) box, so the
+   moving layer can't feed back into its own progress. Scroll-driven: it
+   tracks the scrollbar, not a timer. Desktop only — on small screens the
+   footer can be taller than the viewport, which would strand it mid-rise. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 861px) {
+    /* Longhands only — the `animation` shorthand resets animation-duration to
+       0s, which makes a scroll-driven animation snap to its end state. */
+    .site-footer__rise {
+      animation-name: footer-reveal;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --footer-slot;
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+
+@keyframes footer-reveal {
+  from { transform: translateY(52%); }
+  to   { transform: translateY(0); }
+}
+
+.footer-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(28px, 4vw, 64px);
+  flex-wrap: wrap;
+}
+
+.footer-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(12px, 1.193vw, 20px);
+}
+
+.footer-kicker {
+  margin: 0;
+  font-size: clamp(15px, 1.3915vw, 23px);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Figma sizes this as `width: min-content; min-width: 100%` so it wraps
+   inside the identity column (whose width is set by the status pill). */
+.footer-headline {
+  margin: 0;
+  width: min-content;
+  min-width: 100%;
+  font-size: clamp(24px, 2.2529vw, 38px);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(7px, 0.6626vw, 11px);
+  margin: 0;
+  padding: clamp(9px, 0.9276vw, 16px) clamp(16px, 1.8553vw, 31px);
+  border-radius: 999px;
+  background: var(--gold);
+  color: rgba(0, 0, 0, 0.85);
+  font-size: clamp(12px, 1.1927vw, 20px);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.footer-status img { width: clamp(7px, 0.6626vw, 11px); height: auto; }
+
+.footer-columns {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(32px, 6vw, 96px);
+  width: min(100%, 29.62vw);
+  min-width: 260px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(9px, 0.9276vw, 16px);
+}
+
+.footer-col h2 {
+  margin: 0;
+  font-size: clamp(12px, 1.0602vw, 18px);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.footer-col a {
+  font-size: clamp(15px, 1.3915vw, 23px);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.4577vw, 24px);
+}
+
+.footer-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.footer-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: clamp(11px, 1.1927vw, 20px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.footer-meta p { margin: 0; }
+
+/* ============================================================ small screens */
+/* The hero can't shrink to a phone at 1:1 and stay readable, so the three
+   wordmarks and the two photo strips reflow into a single column, each
+   scaled to the viewport on its own.                                        */
+
+@media (max-width: 860px) {
+
+  /* stays `relative` so it keeps its z-index above the grain overlay */
+  .site-header {
+    position: relative;
+    top: auto;
+    padding: 22px 16px;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    font-size: 13px;
+  }
+  .site-nav { gap: 10px; }
+  .site-nav__star { width: 14px; }
+
+  .hero { aspect-ratio: auto; height: auto; padding: 8px 16px 48px; }
+
+  .hero > .fit-in {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .hero .plate { display: none; }
+
+  .word,
+  .strip {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--w) / var(--h);
+  }
+
+  .strip { background: var(--gold); }
+
+  .tickets { flex-direction: column; height: auto; gap: 16px; }
+  .ticket, .ticket.is-open { width: 100%; }
+  .ticket__stub { display: none; }
+  .ticket__body {
+    position: static; width: auto; max-width: none; opacity: 1; pointer-events: auto;
+    grid-template-columns: 1fr;
+  }
+  .ticket__art { aspect-ratio: 664 / 380; }
+  .tickets__nav { display: none; }
+
+  .footer-top { flex-direction: column; }
+  .footer-columns { width: 100%; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-nav a { transition: color 0.2s ease; }
+  .site-nav a:hover { color: var(--crimson); }
+}
+
+
